@@ -3,7 +3,7 @@ INPUT_SCHEMA = {
         'datatype': 'STRING',
         'required': True,
         'shape': [1],
-        'example': ["https://github.com/microsoft/TRELLIS/raw/main/assets/example_image/T.png"]
+        'example': ["https://github.com/microsoft/TRELLIS/raw/main/assets/example_image/typical_building_building.png"]
     },
     "seed": {
         'datatype': 'INT64',
