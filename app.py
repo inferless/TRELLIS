@@ -1,4 +1,8 @@
+import uuid
 import os
+from io import BytesIO
+import base64
+import requests
 import imageio
 from PIL import Image
 from trellis.pipelines import TrellisImageTo3DPipeline
@@ -21,7 +25,8 @@ class InferlessPythonModel:
         return base64_string
 
     def initialize(self):
-    self.pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large").cuda()
+        self.pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
+        self.pipeline.cuda()
 
     def infer(self, inputs):
         image_url = inputs["image_url"]
@@ -76,8 +81,8 @@ class InferlessPythonModel:
 
         return {
             "gaussian_video": InferlessPythonModel.convert_base64(f"{trial_id}_gs.mp4"),
-            "radiance_field_video": InferlessPythonModel.convert_base64(f"{trial_id}_gs.mp4"),
-            "mesh_video": InferlessPythonModel.convert_base64(f"{trial_id}_gs.mp4"),
+            "radiance_field_video": InferlessPythonModel.convert_base64(f"{trial_id}_rf.mp4"),
+            "mesh_video": InferlessPythonModel.convert_base64(f"{trial_id}_mesh.mp4"),
             "GLB": InferlessPythonModel.convert_base64(f"{trial_id}.glb")
         }
 
