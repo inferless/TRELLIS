@@ -8,12 +8,13 @@ from PIL import Image
 from trellis.pipelines import TrellisImageTo3DPipeline
 from trellis.utils import render_utils, postprocessing_utils
 
+os.environ['SPCONV_ALGO'] = 'native'
 
 class InferlessPythonModel:
     @staticmethod
     def download_image(url):
         response = requests.get(url)
-        return PIL.Image.open(BytesIO(response.content)).convert("RGB")
+        return Image.open(BytesIO(response.content)).convert("RGB")
     
     @staticmethod
     def convert_base64(file_name):
