@@ -1,6 +1,6 @@
 version: 1.0.0
 
-name: TrellisImageTo3DPipeline
+name: Trellis
 import_source: GIT
 
 # you can choose the options between ONNX, TENSORFLOW, PYTORCH
