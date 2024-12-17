@@ -55,10 +55,6 @@ class InferlessPythonModel:
                 "cfg_strength": slat_guidance_strength,
             },
         )
-        # outputs is a dictionary containing generated 3D assets in different formats:
-        # - outputs['gaussian']: a list of 3D Gaussians
-        # - outputs['radiance_field']: a list of radiance fields
-        # - outputs['mesh']: a list of meshes
 
         # Render the outputs
         trial_id = uuid.uuid4()
@@ -74,8 +70,8 @@ class InferlessPythonModel:
             outputs['gaussian'][0],
             outputs['mesh'][0],
             # Optional parameters
-            simplify=glb_extraction_simplify,          # 0.95 Ratio of triangles to remove in the simplification process
-            texture_size=glb_extraction_texture_size,      #1024 Size of the texture used for the GLB
+            simplify=glb_extraction_simplify,          
+            texture_size=glb_extraction_texture_size,  
         )
         glb.export(f"{trial_id}.glb")
 
