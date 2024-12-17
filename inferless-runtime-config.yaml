@@ -10,6 +10,7 @@ build:
     - opencv-python-headless==4.10.0.84
     - scipy==1.14.1
     - rembg==2.0.60
+    - onnxruntime==1.20.1
     - trimesh==4.5.3
     - xatlas==0.0.9
     - pyvista==0.44.2
