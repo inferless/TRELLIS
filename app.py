@@ -45,7 +45,6 @@ class InferlessPythonModel:
         outputs = self.pipeline.run(
             image,
             seed=seed,
-            formats=["gaussian", "mesh"],
             preprocess_image=preprocess_image,
             sparse_structure_sampler_params={
                 "steps": ss_sampling_steps,
