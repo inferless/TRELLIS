@@ -77,7 +77,7 @@ class InferlessPythonModel:
 
         video = render_utils.render_video(outputs['radiance_field'][0])['color']
         buffer = BytesIO()
-        imageio.mimsave(buffer, video, fps=30)
+        imageio.mimsave(buffer, video, fps=30, format='mp4')
         buffer.seek(0)
         s3_key = f"{s3_key_prefix}{trial_id}_rf.mp4"  # S3 key for the video
         self.s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
@@ -86,7 +86,7 @@ class InferlessPythonModel:
         
         video = render_utils.render_video(outputs['mesh'][0])['normal']
         buffer = BytesIO()
-        imageio.mimsave(buffer, video, fps=30)
+        imageio.mimsave(buffer, video, fps=30, format='mp4')
         buffer.seek(0)
         s3_key = f"{s3_key_prefix}{trial_id}_mesh.mp4"  # S3 key for the video
         self.s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
