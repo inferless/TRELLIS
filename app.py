@@ -7,6 +7,8 @@ import imageio
 from PIL import Image
 from trellis.pipelines import TrellisImageTo3DPipeline
 from trellis.utils import render_utils, postprocessing_utils
+import boto3
+
 
 os.environ['SPCONV_ALGO'] = 'native'
 
@@ -28,6 +30,9 @@ class InferlessPythonModel:
     def initialize(self):
         self.pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
         self.pipeline.cuda()
+
+        aws_region = 'us-east-1'  # e.g., 'us-west-1'
+        self.s3_client = boto3.client('s3', region_name=aws_region, aws_access_key_id=os.getenv("AWS_KEYS"), aws_secret_access_key=os.getenv("AWS_SECRETS") )
 
     def infer(self, inputs):
         image_url = inputs["image_url"]
@@ -58,12 +63,34 @@ class InferlessPythonModel:
 
         # Render the outputs
         trial_id = uuid.uuid4()
-        video = render_utils.render_video(outputs['gaussian'][0])['color']
-        imageio.mimsave(f"{trial_id}_gs.mp4", video, fps=30)
+        s3_bucket_name = 'infer-global-models'
+        s3_key_prefix = 'videos/'  # Folder path in your S3 bucket (optional)
+
+        video = render_utils.render_video(outputs['gaussian'][0])['color']        
+        buffer = BytesIO()
+        imageio.mimsave(buffer, video, fps=30, format='mp4')
+        buffer.seek(0)  # Reset the buffer position
+        # Upload to S3
+        s3_key = f"{s3_key_prefix}{trial_id}_gs.mp4"  # S3 key for the video
+        s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
+        key_gs = s3_key
+
         video = render_utils.render_video(outputs['radiance_field'][0])['color']
-        imageio.mimsave(f"{trial_id}_rf.mp4", video, fps=30)
+        buffer = BytesIO()
+        imageio.mimsave(buffer, video, fps=30)
+        buffer.seek(0)
+        s3_key = f"{s3_key_prefix}{trial_id}_rf.mp4"  # S3 key for the video
+        s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
+        key_rf = s3_key
+
+        
         video = render_utils.render_video(outputs['mesh'][0])['normal']
-        imageio.mimsave(f"{trial_id}_mesh.mp4", video, fps=30)
+        buffer = BytesIO()
+        imageio.mimsave(buffer, video, fps=30)
+        buffer.seek(0)
+        s3_key = f"{s3_key_prefix}{trial_id}_mesh.mp4"  # S3 key for the video
+        self.s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
+        key_mesh = s3_key
 
         # GLB files can be extracted from the outputs
         glb = postprocessing_utils.to_glb(
@@ -73,13 +100,13 @@ class InferlessPythonModel:
             simplify=glb_extraction_simplify,          
             texture_size=glb_extraction_texture_size,  
         )
-        glb.export(f"{trial_id}.glb")
+        
+        # glb.export(f"{trial_id}.glb")
 
         return {
             "gaussian_video": InferlessPythonModel.convert_base64(f"{trial_id}_gs.mp4"),
             "radiance_field_video": InferlessPythonModel.convert_base64(f"{trial_id}_rf.mp4"),
             "mesh_video": InferlessPythonModel.convert_base64(f"{trial_id}_mesh.mp4"),
-            "GLB": InferlessPythonModel.convert_base64(f"{trial_id}.glb")
         }
 
     def finalize(self):
