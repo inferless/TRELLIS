@@ -41,7 +41,7 @@ class InferlessPythonModel:
         ss_sampling_steps =  int(inputs.get("ss_sampling_steps",12))
         slat_guidance_strength =  float(inputs.get("slat_guidance_strength",3))
         slat_sampling_steps = int(inputs.get("slat_sampling_steps",12))
-        glb_extraction_simplify = float(inputs.get("glb_extraction_simplify",0.95))
+        glb_extraction_simplify = float(inputs.get("glb_extraction_simplify",0.0))
         glb_extraction_texture_size = int(inputs.get("glb_extraction_texture_size",1024))
         preprocess_image = bool(inputs.get("preprocess_image",False))
 
