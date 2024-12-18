@@ -104,9 +104,9 @@ class InferlessPythonModel:
         # glb.export(f"{trial_id}.glb")
 
         return {
-            "gaussian_video": InferlessPythonModel.convert_base64(f"{trial_id}_gs.mp4"),
-            "radiance_field_video": InferlessPythonModel.convert_base64(f"{trial_id}_rf.mp4"),
-            "mesh_video": InferlessPythonModel.convert_base64(f"{trial_id}_mesh.mp4"),
+            "gaussian_video": key_gs,
+            "radiance_field_video": key_rf,
+            "mesh_video": key_mesh,
         }
 
     def finalize(self):
