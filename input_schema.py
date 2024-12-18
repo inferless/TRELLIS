@@ -39,7 +39,7 @@ INPUT_SCHEMA = {
         'datatype': 'FP64',
         'required': False,
         'shape': [1],
-        'example': [0.95]
+        'example': [0.0]
     },
     "glb_extraction_texture_size": {
         'datatype': 'INT64',
