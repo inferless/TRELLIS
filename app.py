@@ -72,7 +72,7 @@ class InferlessPythonModel:
         buffer.seek(0)  # Reset the buffer position
         # Upload to S3
         s3_key = f"{s3_key_prefix}{trial_id}_gs.mp4"  # S3 key for the video
-        s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
+        self.s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
         key_gs = s3_key
 
         video = render_utils.render_video(outputs['radiance_field'][0])['color']
@@ -80,7 +80,7 @@ class InferlessPythonModel:
         imageio.mimsave(buffer, video, fps=30)
         buffer.seek(0)
         s3_key = f"{s3_key_prefix}{trial_id}_rf.mp4"  # S3 key for the video
-        s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
+        self.s3_client.upload_fileobj(buffer, s3_bucket_name, s3_key)
         key_rf = s3_key
 
         
