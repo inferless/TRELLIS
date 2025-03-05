@@ -1,5 +1,7 @@
-import uuid
 import os
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"]='1'
+from huggingface_hub import snapshot_download
+import uuid
 from io import BytesIO
 import base64
 import requests
@@ -28,7 +30,9 @@ class InferlessPythonModel:
         return base64_string
 
     def initialize(self):
-        self.pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
+        model_id = "JeffreyXiang/TRELLIS-image-large"
+        snapshot_download(repo_id=model_id,allow_patterns=["*.safetensors"])
+        self.pipeline = TrellisImageTo3DPipeline.from_pretrained(model_id)
         self.pipeline.cuda()
 
         aws_region = 'us-east-1'  # e.g., 'us-west-1'
